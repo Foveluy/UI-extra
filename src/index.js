@@ -19,46 +19,50 @@ var coverGuide = function(cover, target) {
       offsetLeft = target.getBoundingClientRect().left + (body.scrollLeft || doc.scrollLeft)
 
     // set size and border-width
-    cover.style.width = targetWidth + 'px'
-    cover.style.height = targetHeight + 'px'
-    cover.style.borderWidth =
-      offsetTop +
-      'px ' +
-      (pageWidth - targetWidth - offsetLeft) +
-      'px ' +
-      (pageHeight - targetHeight - offsetTop) +
-      'px ' +
-      offsetLeft +
-      'px'
+    // cover.style.width = targetWidth + 'px'
+    // cover.style.height = targetHeight + 'px'
+    // cover.style.borderWidth =
+    //   offsetTop +
+    //   'px ' +
+    //   (pageWidth - targetWidth - offsetLeft) +
+    //   'px ' +
+    //   (pageHeight - targetHeight - offsetTop) +
+    //   'px ' +
+    //   offsetLeft +
+    //   'px'
 
-    cover.style.display = 'block'
-    cover.style.opacity = '.75'
-    cover.style.zIndex = '1000'
+    // cover.style.display = 'block'
+    // cover.style.opacity = '.75'
+    // cover.style.zIndex = '1000'
+    return {
+      width: targetWidth,
+      height: targetHeight,
+      display: 'block',
+      opacity: 0.75,
+      zIndex: 1000,
+      borderWidth:
+        offsetTop +
+        'px ' +
+        (pageWidth - targetWidth - offsetLeft) +
+        'px ' +
+        (pageHeight - targetHeight - offsetTop) +
+        'px ' +
+        offsetLeft +
+        'px'
+    }
   }
 }
 
-class Cover extends React.Component {
-  static defaultProps = {
-    isActive: true
-  }
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.isActive) {
-      this.arrElTarget = [document.getElementById(this.props.hightLight)]
-      coverGuide(this.cover, this.arrElTarget[0])
-    }
-  }
-
-  componentDidMount() {
-    this.index = 0
-    this.arrElTarget = [document.getElementById(this.props.hightLight)]
-    this.props.isActive && coverGuide(this.cover, this.arrElTarget[this.index])
-  }
-  render() {
-    const coverStyle = {
-      display: this.props.isActive ? 'block' : 'none',
+export class Cover extends React.Component {
+  constructor(props) {
+    super(props)
+    const win = window
+    this.state = {
+      width: win.innerWidth,
+      height: win.innerHeight,
+      borderWidth: 0,
+      display: 'block',
       position: 'absolute',
-      width: 0,
-      height: 0,
       left: 0,
       top: 0,
       right: 0,
@@ -73,18 +77,58 @@ class Cover extends React.Component {
       boxShadow: '0 0 0 100px #000',
       overflow: 'hidden'
     }
+  }
 
-    console.log(this.props.children)
+  static defaultProps = {
+    isActive: true
+  }
+  componentWillReceiveProps(nextProps) {
+    const win = window
+    const coverStyle = coverGuide(this.cover, this.arrElTarget[this.index])
+
+    this.setState({
+      ...coverStyle,
+      opacity: nextProps.isActive ? 0.75 : 0,
+      width: nextProps.isActive ? coverStyle.width : win.innerWidth,
+      height: nextProps.isActive ? coverStyle.height : win.innerHeight,
+      zIndex: nextProps.isActive ? 1000 : -1000,
+      borderWidth: nextProps.isActive ? coverStyle.borderWidth : 0
+    })
+  }
+
+  componentDidMount() {
+    this.index = 0
+    this.arrElTarget = [this.childRef]
+    this.props.isActive &&
+      this.setState({
+        ...coverGuide(this.cover, this.arrElTarget[this.index])
+      })
+  }
+  _insideClickHandle = e => {
+    e.stopPropagation()
+
+    if (this.props.isActive) this.props.onClick && this.props.onClick()
+  }
+  render() {
+    const getRef = node => {
+      this.childRef = node
+    }
+
     return (
       <div>
-        <div style={{ ...coverStyle }} ref={node => (this.cover = node)} onClick={this.props.onClick} />
-        {React.Children.only(this.props.children)}
+        <div
+          style={{ ...this.state }}
+          className="ui-extra-cover"
+          ref={node => (this.cover = node)}
+          onClick={this._insideClickHandle}
+        />
+        {React.Children.only(this.props.children(getRef))}
       </div>
     )
   }
 }
 
-class Shit extends React.Component {
+export class Shit extends React.Component {
   state = {
     isActive: false
   }
@@ -94,12 +138,15 @@ class Shit extends React.Component {
       isActive: !this.state.isActive
     })
   }
+  test = () => {
+    console.log('asda')
+  }
 
   render() {
     return (
       <div>
-        <Cover hightLight="i" isActive={this.state.isActive} onClick={this.handleOnClick}>
-          <h1 id="i">哈哈哈</h1>
+        <Cover onClick={this.handleOnClick} isActive={this.state.isActive}>
+          {getRef => <h1 ref={getRef}>哈哈哈</h1>}
         </Cover>
         <button onClick={this.handleOnClick}>查看</button>
       </div>
@@ -107,4 +154,4 @@ class Shit extends React.Component {
   }
 }
 
-ReactDOM.render(<Shit />, document.getElementById('root'))
+// ReactDOM.render(<Shit />, document.getElementById('root'))
