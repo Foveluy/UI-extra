@@ -138,9 +138,6 @@ export class Shit extends React.Component {
       isActive: !this.state.isActive
     })
   }
-  test = () => {
-    console.log('asda')
-  }
 
   render() {
     return (
@@ -148,7 +145,9 @@ export class Shit extends React.Component {
         <Cover onClick={this.handleOnClick} isActive={this.state.isActive}>
           {getRef => <h1 ref={getRef}>哈哈哈</h1>}
         </Cover>
-        <button onClick={this.handleOnClick}>查看</button>
+        <button id="test-button" onClick={this.handleOnClick}>
+          查看
+        </button>
       </div>
     )
   }

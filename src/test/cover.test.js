@@ -58,7 +58,7 @@ describe('一个测试', () => {
     expect(a).equal(2)
   })
 
-  it(' render when update', () => {
+  it('render when update && when button click', () => {
     const wrapper = mount(<Shit />)
     wrapper.instance().setState({
       isActive: true
@@ -67,5 +67,11 @@ describe('一个测试', () => {
     const style = cov.getDOMNode().style
     expect(style.opacity).equal('0.75')
     expect(style['z-index']).equal('1000')
+
+    const button = wrapper.find('#test-button')
+    button.simulate('click')
+    expect(style.opacity).equal('0')
+    expect(style['z-index']).equal('-1000')
+
   })
 })
