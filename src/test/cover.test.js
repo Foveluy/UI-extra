@@ -2,11 +2,36 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import { configure } from 'enzyme'
 import Adapter from 'enzyme-adapter-react-16'
-import { Cover, Shit } from '../'
+import { Cover } from '../cover'
 import { mount, shallow } from 'enzyme'
 import { expect } from 'chai'
 
 configure({ adapter: new Adapter() })
+
+class CoverWithProps extends React.Component {
+  state = {
+    isActive: false
+  }
+
+  handleOnClick = () => {
+    this.setState({
+      isActive: !this.state.isActive
+    })
+  }
+
+  render() {
+    return (
+      <div>
+        <Cover onClick={this.handleOnClick} isActive={this.state.isActive}>
+          {getRef => <h1 ref={getRef}>哈哈哈</h1>}
+        </Cover>
+        <button id="test-button" onClick={this.handleOnClick}>
+          查看
+        </button>
+      </div>
+    )
+  }
+}
 
 describe('一个测试', () => {
   const CoverElement = <Cover>{getRef => <h1 ref={getRef}>哈哈哈</h1>}</Cover>
@@ -59,7 +84,7 @@ describe('一个测试', () => {
   })
 
   it('render when update && when button click', () => {
-    const wrapper = mount(<Shit />)
+    const wrapper = mount(<CoverWithProps />)
     wrapper.instance().setState({
       isActive: true
     })
@@ -72,6 +97,5 @@ describe('一个测试', () => {
     button.simulate('click')
     expect(style.opacity).equal('0')
     expect(style['z-index']).equal('-1000')
-
   })
 })
