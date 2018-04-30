@@ -12,7 +12,6 @@ export class Shit extends React.Component {
   handleOnClick = () => {
     let index = this.state.activeIndex + 1
 
-    console.log(index)
     this.setState({
       activeIndex: index % 3
     })
