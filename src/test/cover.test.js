@@ -23,7 +23,7 @@ class CoverWithProps extends React.Component {
     return (
       <div>
         <Cover onClick={this.handleOnClick} isActive={this.state.isActive}>
-          {getRef => <h1 ref={getRef}>哈哈哈</h1>}
+          {getRef => <h1 ref={n => getRef(n, 1)}>哈哈哈</h1>}
         </Cover>
         <button id="test-button" onClick={this.handleOnClick}>
           查看
@@ -34,8 +34,8 @@ class CoverWithProps extends React.Component {
 }
 
 describe('一个测试', () => {
-  const CoverElement = <Cover>{getRef => <h1 ref={getRef}>哈哈哈</h1>}</Cover>
-  const NotActiveCoverElement = <Cover isActive={false}>{getRef => <h1 ref={getRef}>哈哈哈</h1>}</Cover>
+  const CoverElement = <Cover>{getRef => <h1 ref={n => getRef(n, 1)}>哈哈哈</h1>}</Cover>
+  const NotActiveCoverElement = <Cover isActive={false}>{getRef => <h1 ref={n => getRef(n, 1)}>哈哈哈</h1>}</Cover>
 
   it('renders without crashing', () => {
     const div = document.createElement('div')
@@ -66,7 +66,7 @@ describe('一个测试', () => {
     }
     const wrapper = mount(
       <Cover isActive={false} onClick={handle}>
-        {getRef => <h1 ref={getRef}>哈哈哈</h1>}
+        {getRef => <h1 ref={n => getRef(n, 1)}>哈哈哈</h1>}
       </Cover>
     )
     const cov = wrapper.find('.ui-extra-cover')
@@ -75,7 +75,7 @@ describe('一个测试', () => {
 
     const wrapper2 = mount(
       <Cover isActive={true} onClick={handle}>
-        {getRef => <h1 ref={getRef}>哈哈哈</h1>}
+        {getRef => <h1 ref={n => getRef(n, 1)}>哈哈哈</h1>}
       </Cover>
     )
     const cov2 = wrapper2.find('.ui-extra-cover')
@@ -97,5 +97,13 @@ describe('一个测试', () => {
     button.simulate('click')
     expect(style.opacity).equal('0')
     expect(style['z-index']).equal('-1000')
+  })
+
+  it('when key === void 666 will throw', () => {
+    try {
+      mount(<Cover>{getRef => <h1 ref={getRef}>哈哈哈</h1>}</Cover>)
+    } catch (e) {
+      expect(e.message).equal('you need a unique key for `(node)=>getRef(node,key)`')
+    }
   })
 })

@@ -39,6 +39,9 @@ export class Cover extends React.Component {
   constructor(props) {
     super(props)
     const win = window
+    this.childRef = []
+    this.cache = new Map()
+
     this.state = {
       width: win.innerWidth,
       height: win.innerHeight,
@@ -62,12 +65,12 @@ export class Cover extends React.Component {
   }
 
   static defaultProps = {
-    isActive: true
+    isActive: true,
+    activeIndex: 0
   }
   componentWillReceiveProps(nextProps) {
     const win = window
-    const coverStyle = coverGuide(this.cover, this.arrElTarget[this.index])
-
+    const coverStyle = coverGuide(this.cover, this.childRef[nextProps.activeIndex])
     this.setState({
       ...coverStyle,
       opacity: nextProps.isActive ? 0.75 : 0,
@@ -79,11 +82,9 @@ export class Cover extends React.Component {
   }
 
   componentDidMount() {
-    this.index = 0
-    this.arrElTarget = [this.childRef]
     this.props.isActive &&
       this.setState({
-        ...coverGuide(this.cover, this.arrElTarget[this.index])
+        ...coverGuide(this.cover, this.childRef[this.props.activeIndex])
       })
   }
   _insideClickHandle = e => {
@@ -93,10 +94,13 @@ export class Cover extends React.Component {
   }
   render() {
     // getRefs from outside
-    const getRef = node => {
-      this.childRef = node
+    const getRef = (node, key) => {
+      if (key === void 666) throw new Error('you need a unique key for `(node)=>getRef(node,key)`')
+      if (!this.cache.get(key)) {
+        this.childRef.push(node)
+        this.cache.set(key, 1)
+      }
     }
-
     return (
       <div>
         <div
