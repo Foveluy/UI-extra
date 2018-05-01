@@ -1,5 +1,12 @@
 # UI-extra
 
+# todolist 
+- [x] cover
+  - [x] single
+  - [x] multi
+  - [ ] popup
+- [x] dragger
+
 - touch
   - smooth scroll
 - spinner [https://github.com/yuanyan/halogen]
@@ -10,4 +17,5 @@
   - [x] single
   - [x] multi
   - [ ] popup
-- react-dnd 
+- react-dnd  https://github.com/kutlugsahin/smooth-dnd
+- notification https://louisbarranqueiro.github.io/reapop/

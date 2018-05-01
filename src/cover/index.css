@@ -1,0 +1,7 @@
+.ui-extra-popup {
+    background: white;
+    position: absolute;
+    transition: all .25s;
+    padding: 3px;
+    border-radius: 3px;
+}

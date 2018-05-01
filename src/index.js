@@ -2,6 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import './index.css'
 import { Cover } from './cover'
+import { Dragger } from './dragger'
 
 export class Shit extends React.Component {
   state = {
@@ -20,7 +21,12 @@ export class Shit extends React.Component {
   render() {
     return (
       <div>
-        <Cover onClick={this.handleOnClick} isActive={this.state.isActive} activeIndex={this.state.activeIndex}>
+        {/* <Cover
+          onClick={this.handleOnClick}
+          isActive={this.state.isActive}
+          activeIndex={this.state.activeIndex}
+          popupElement="我是popup"
+        >
           {getRef => (
             <div>
               <h1 ref={node => getRef(node, 1)} style={{ width: 200 }}>
@@ -34,10 +40,15 @@ export class Shit extends React.Component {
               </h2>
             </div>
           )}
-        </Cover>
+        </Cover> */}
         <button id="test-button" onClick={this.handleOnClick}>
           查看
         </button>
+        <Dragger>
+          {() => {
+            return <div>我是拖拽</div>
+          }}
+        </Dragger>
       </div>
     )
   }

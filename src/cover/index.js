@@ -1,4 +1,5 @@
 import React from 'react'
+import './index.css'
 
 var coverGuide = function(cover, target) {
   var body = document.body,
@@ -35,11 +36,38 @@ var coverGuide = function(cover, target) {
   }
 }
 
+const getPopupPosition = (target, popupNode, position) => {
+  const p = (l, t) => ({ left: l, top: t })
+
+  const body = document.body,
+    doc = document.documentElement
+
+  const offsetTop = target.getBoundingClientRect().top + (body.scrollTop || doc.scrollTop),
+    offsetLeft = target.getBoundingClientRect().left + (body.scrollLeft || doc.scrollLeft)
+
+  if (position === 'bottom') {
+    return p(offsetLeft, offsetTop + target.getBoundingClientRect().height + 3)
+  }
+  if (position === 'right') {
+    return p(offsetLeft + target.getBoundingClientRect().width + 3, offsetTop)
+  }
+
+  if (position === 'top') {
+    return p(offsetLeft, target.getBoundingClientRect().top - 3)
+  }
+
+  if (position === 'left') {
+    return p(offsetLeft - popupNode.getBoundingClientRect().width - 3, offsetTop)
+  }
+}
+
 export class Cover extends React.Component {
   constructor(props) {
     super(props)
     const win = window
     this.childRef = []
+    this.PopupNode = React.createRef()
+
     this.cache = new Map()
 
     this.state = {
@@ -66,7 +94,9 @@ export class Cover extends React.Component {
 
   static defaultProps = {
     isActive: true,
-    activeIndex: 0
+    activeIndex: 0,
+    popupPosition: 'bottom',
+    popupElement: ''
   }
   componentWillReceiveProps(nextProps) {
     const win = window
@@ -92,6 +122,14 @@ export class Cover extends React.Component {
     //when modal layer is not active, we can not click it
     if (this.props.isActive) this.props.onClick && this.props.onClick()
   }
+
+  _popup = () => {
+    const _ref = this.childRef[this.props.activeIndex]
+    if (_ref) {
+      return getPopupPosition(_ref, this.PopupNode.current, this.props.popupPosition)
+    }
+  }
+
   render() {
     // getRefs from outside
     const getRef = (node, key) => {
@@ -103,6 +141,17 @@ export class Cover extends React.Component {
     }
     return (
       <div>
+        <div
+          className="ui-extra-popup"
+          style={{
+            ...this._popup(),
+            zIndex: 1002,
+            display: this.props.isActive ? 'block' : 'none'
+          }}
+          ref={this.PopupNode}
+        >
+          {this.props.popupElement}
+        </div>
         <div
           style={{ ...this.state }}
           className="ui-extra-cover"
