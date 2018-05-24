@@ -33,7 +33,7 @@ class CoverWithProps extends React.Component {
   }
 }
 
-describe('一个测试', () => {
+describe('Cover component test', () => {
   const CoverElement = <Cover>{getRef => <h1 ref={n => getRef(n, 1)}>哈哈哈</h1>}</Cover>
   const NotActiveCoverElement = <Cover isActive={false}>{getRef => <h1 ref={n => getRef(n, 1)}>哈哈哈</h1>}</Cover>
 

@@ -45,13 +45,11 @@ export class Shit extends React.Component {
           查看
         </button>
         <Dragger>
-          {(provided, dragMix) => {
-            return (
-              <div {...provided} {...dragMix} className="item">
-                我是拖拽
-              </div>
-            )
-          }}
+          {(provided, dragMix, resizeMix) => (
+            <div {...provided} {...dragMix} className="item">
+              <div>我是拖拽</div>
+            </div>
+          )}
         </Dragger>
       </div>
     )

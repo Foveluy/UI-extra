@@ -1,7 +1,6 @@
 {
   "name": "ui-extra",
   "version": "0.1.0",
-  "private": true,
   "dependencies": {
     "@types/react": "^16.3.13",
     "chai": "^4.1.2",
