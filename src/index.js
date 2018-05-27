@@ -21,8 +21,8 @@ export class Shit extends React.Component {
   render() {
     return (
       <div>
-        {/* <Cover
-          onClick={this.handleOnClick}
+        <Cover
+          onMaskClick={this.handleOnClick}
           isActive={this.state.isActive}
           activeIndex={this.state.activeIndex}
           popupElement="我是popup"
@@ -40,7 +40,7 @@ export class Shit extends React.Component {
               </h2>
             </div>
           )}
-        </Cover> */}
+        </Cover>
         <button id="test-button" onClick={this.handleOnClick}>
           查看
         </button>

@@ -36,6 +36,11 @@ var coverGuide = function(cover, target) {
   }
 }
 
+/**
+ * @param {*} target
+ * @param {HTMLDivElement} popupNode
+ * @param {string} position
+ */
 const getPopupPosition = (target, popupNode, position) => {
   const p = (l, t) => ({ left: l, top: t })
 
@@ -84,8 +89,6 @@ export class Cover extends React.Component {
       opacity: 0,
       /* filter: alpha(opacity=75); */
       zIndex: -1000,
-      /* 过渡效果 */
-      transition: 'all .25s',
       /* 边缘闪动问题fix */
       boxShadow: '0 0 0 100px #000',
       overflow: 'hidden'
@@ -120,7 +123,7 @@ export class Cover extends React.Component {
   _insideClickHandle = e => {
     e.stopPropagation()
     //when modal layer is not active, we can not click it
-    if (this.props.isActive) this.props.onClick && this.props.onClick()
+    if (this.props.isActive) this.props.onMaskClick && this.props.onMaskClick()
   }
 
   _popup = () => {
@@ -131,6 +134,8 @@ export class Cover extends React.Component {
   }
 
   render() {
+    const { isActive, popupElement, animated } = this.props
+
     // getRefs from outside
     const getRef = (node, key) => {
       if (key === void 666) throw new Error('you need a unique key for `(node)=>getRef(node,key)`')
@@ -139,21 +144,27 @@ export class Cover extends React.Component {
         this.cache.set(key, 1)
       }
     }
+
+    const PopupNode = (
+      <div
+        className="ui-extra-popup"
+        style={{
+          ...this._popup(),
+          zIndex: 1002,
+          display: isActive ? 'block' : 'none',
+          transition: animated ? 'all .25s' : ''
+        }}
+        ref={this.PopupNode}
+      >
+        {popupElement}
+      </div>
+    )
+
     return (
       <div>
+        {PopupNode}
         <div
-          className="ui-extra-popup"
-          style={{
-            ...this._popup(),
-            zIndex: 1002,
-            display: this.props.isActive ? 'block' : 'none'
-          }}
-          ref={this.PopupNode}
-        >
-          {this.props.popupElement}
-        </div>
-        <div
-          style={{ ...this.state }}
+          style={{ ...this.state, transition: animated ? 'all .25s' : '' }}
           className="ui-extra-cover"
           ref={node => (this.cover = node)}
           onClick={this._insideClickHandle}
