@@ -4,7 +4,7 @@
 - [x] cover
   - [x] single
   - [x] multi
-  - [ ] popup
+  - [x] popup
 - [x] dragger
 
 - touch
